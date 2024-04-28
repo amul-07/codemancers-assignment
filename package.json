@@ -1,0 +1,41 @@
+{
+    "name": "codemancers_assignment",
+    "version": "1.0.0",
+    "description": "A small e-commerce application as an assignment for the codemancers.",
+    "type": "module",
+    "main": "./src/server.js",
+    "scripts": {
+        "dev": "nodemon ./src/server.js",
+        "debug": "ndb ./src/server.js"
+    },
+    "author": "Amulya Kaustubh",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "express-mongo-sanitize": "^2.2.0",
+        "express-rate-limit": "^7.2.0",
+        "helmet": "^7.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.3.2",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.5-lts.1",
+        "nodemailer": "^6.9.13",
+        "validator": "^13.11.0",
+        "xss-clean": "^0.1.4"
+    },
+    "devDependencies": {
+        "eslint": "^8.57.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^5.1.3",
+        "eslint-plugin-react": "^7.34.1",
+        "ndb": "^1.1.5",
+        "nodemon": "^3.1.0",
+        "prettier": "^3.2.5"
+    }
+}
