@@ -4,6 +4,7 @@ import User from '../../models/Users.js';
 import AppError from '../../utils/appError.js';
 import catchAsync from '../../utils/catchAsync.js';
 import { sendEmail } from '../../utils/email.js';
+import { STATUS, STATUSMESSAGE, MESSAGE } from '../../utils/constants.js';
 
 /**
  * @description It updates the contents of the cart of a particular user.
@@ -15,7 +16,7 @@ export const updateCart = catchAsync(async (req, res, next) => {
     //checking the validity of the requested productId
     const product = await Product.findById(productId);
     if (!product) {
-        return next(new AppError('Invalid Product, no such product exists', 400));
+        return next(new AppError(MESSAGE.InvalidProductId, STATUS.BAD_REQUEST));
     }
 
     let cart = await Cart.find({ userId: req.user.id }).lean();
@@ -49,8 +50,9 @@ export const updateCart = catchAsync(async (req, res, next) => {
         cart = newCart.products;
     }
 
-    res.status(201).json({
-        status: 'success',
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.CartUpdated,
         data: {
             cart
         }
@@ -66,11 +68,12 @@ export const getCart = catchAsync(async (req, res, next) => {
 
     //Checking whether the cart is empty
     if (!cart) {
-        return next(new AppError('Cart is Empty, Please fill the cart with some products', 400));
+        return next(new AppError(MESSAGE.EmptyCart, STATUS.BAD_REQUEST));
     }
 
-    res.status(200).json({
-        status: 'success',
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.CartDetailsFetched,
         data: {
             cart
         }
@@ -85,7 +88,7 @@ export const checkOut = catchAsync(async (req, res, next) => {
     // checking whether the cart is empty
     let cart = await Cart.find({ userId: req.user.id }).lean();
     if (!cart[0]) {
-        return next(new AppError(`Can't Checkout, Cart is Empty!`, 400));
+        return next(new AppError(MESSAGE.EmptyCart, STATUS.BAD_REQUEST));
     }
 
     //checking whether the user has added his shipping address
@@ -93,7 +96,7 @@ export const checkOut = catchAsync(async (req, res, next) => {
     const user = await User.find({ $and: [{ _id: req.user.id }, { address: { $exists: true } }] }).lean();
 
     if (!user[0]) {
-        return next(new AppError(`Shipping Address not Exists, Please add the address`, 400));
+        return next(new AppError(MESSAGE.ShippingAddressNotFound, STATUS.BAD_REQUEST));
     }
 
     // Sending user an email about cart checkout details
@@ -124,7 +127,8 @@ export const checkOut = catchAsync(async (req, res, next) => {
 
     cart = await Cart.deleteOne({ userId: req.user.id });
 
-    res.status(201).json({
-        status: 'success'
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.CartCheckout
     });
 });

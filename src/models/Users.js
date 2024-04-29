@@ -30,11 +30,11 @@ const userSchema = new Schema(
             default: 'User'
         },
         address: {
-            address: { type: String, maxLength: 100, minlength: 10, trim: true, required: true },
-            city: { type: String, maxLength: 20, minlength: 2, trim: true, required: true },
-            state: { type: String, maxLength: 30, minlength: 2, trim: true, required: true },
+            address: { type: String, maxLength: 100, minlength: 10, trim: true },
+            city: { type: String, maxLength: 20, minlength: 2, trim: true },
+            state: { type: String, maxLength: 30, minlength: 2, trim: true },
             landmark: { type: String, maxLength: 80, minlength: 5, trim: true },
-            pinCode: { type: String, maxLength: 6, minlength: 6, trim: true, required: true }
+            pinCode: { type: String, maxLength: 6, minlength: 6, trim: true }
         },
         createdAt: {
             type: Date,

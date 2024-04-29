@@ -13,7 +13,7 @@ dotenv.config({ path: './config.env' });
 const port = process.env.PORT || 7777;
 
 mongoose
-    .connect(process.env.DATABASE_LOCAL)
+    .connect(process.env.DATABASE)
     .then(() => console.log('MongoDB connection established.'))
     .catch((error) => console.error('MongoDB connection failed:', error.message));
 

@@ -7,6 +7,7 @@ import xss from 'xss-clean';
 import routes from './apis/routes/index.js';
 import AppError from './utils/appError.js';
 import globalErrorHandler from './utils/errorHandler.js';
+import { STATUS } from './utils/constants.js';
 
 const app = express();
 
@@ -42,7 +43,7 @@ app.use('/api/v1', routes);
 
 /** Handling Unknown Routes */
 app.all('*', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+    next(new AppError(`Can't find ${req.originalUrl} on this server`, STATUS.NOT_FOUND));
 });
 
 app.use(globalErrorHandler);

@@ -1,4 +1,5 @@
 import Product from '../../models/Products.js';
+import { STATUS, STATUSMESSAGE, MESSAGE } from '../../utils/constants.js';
 
 /**
  * @description This controller fetches all the products.
@@ -8,16 +9,17 @@ export const getProducts = async (req, res) => {
     try {
         const products = await Product.find();
 
-        res.status(200).json({
-            status: 'success',
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.ProductDetailsFetched,
             results: products.length,
             data: {
                 products
             }
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.NOT_FOUND).json({
+            status: STATUSMESSAGE[STATUS.NOT_FOUND],
             message: error
         });
     }
@@ -31,16 +33,17 @@ export const getProduct = async (req, res) => {
     try {
         const products = await Product.findById(req.params.id);
 
-        res.status(200).json({
-            status: 'success',
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.ProductDetailsFetched,
             results: products.length,
             data: {
                 products
             }
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.NOT_FOUND).json({
+            status: STATUSMESSAGE[STATUS.NOT_FOUND],
             message: error
         });
     }
@@ -61,15 +64,16 @@ export const updateProduct = async (req, res) => {
             }
         );
 
-        res.status(200).json({
-            status: 'success',
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.ProductDetailsUpdated,
             data: {
                 product
             }
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.BAD_REQUEST).json({
+            status: STATUSMESSAGE[STATUS.BAD_REQUEST],
             message: error
         });
     }
@@ -83,12 +87,13 @@ export const removeProduct = async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
 
-        res.status(204).json({
-            status: 'success'
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.ProductRemoved
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.BAD_REQUEST).json({
+            status: STATUSMESSAGE[STATUS.BAD_REQUEST],
             message: error
         });
     }
@@ -108,15 +113,16 @@ export const addProducts = async (req, res) => {
             image: req?.file?.originalname
         });
 
-        res.status(201).json({
-            status: 'success',
+        res.status(STATUS.CREATED).json({
+            status: STATUSMESSAGE[STATUS.CREATED],
+            message: MESSAGE.ProductAdded,
             data: {
                 product: newProduct
             }
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'failed',
+        res.status(STATUS.BAD_REQUEST).json({
+            status: STATUSMESSAGE[STATUS.BAD_REQUEST],
             message: error
         });
     }

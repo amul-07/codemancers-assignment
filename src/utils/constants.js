@@ -1,0 +1,55 @@
+export const STATUS = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    UNSUPPORTED_ACTION: 405,
+    VALIDATION_FAILED: 422,
+    SERVER_ERROR: 500,
+    CREATED: 201,
+    PROXY_ERROR: 502,
+    MAINTENANCE_MODE: 503
+};
+export const STATUSMESSAGE = {
+    [STATUS.BAD_REQUEST]: 'Bad Request',
+    [STATUS.UNAUTHORIZED]: 'Unauthorized',
+    [STATUS.FORBIDDEN]: 'Forbidden',
+    [STATUS.NOT_FOUND]: 'Not Found',
+    [STATUS.UNSUPPORTED_ACTION]: 'Unsupported Action',
+    [STATUS.VALIDATION_FAILED]: 'Validation Failed',
+    [STATUS.SERVER_ERROR]: 'Internal Server Error',
+    [STATUS.CREATED]: 'Created',
+    [STATUS.MAINTENANCE_MODE]: 'Maintenance Mode',
+    [STATUS.OK]: 'OK'
+};
+
+export const MESSAGE = {
+    CartUpdated: 'Cart Updated Successfully',
+    CartDetailsFetched: 'Cart Details Fetched Successfully',
+    CartCheckout: 'Cart Checked out Successfully',
+    InvalidProductId: 'Invalid Product, no such product exists',
+    EmptyCart: 'Cart is Empty, Please fill the cart with some products',
+    ShippingAddressNotFound: 'Shipping Address not Exists, Please add the address',
+    UserLoggedOut: 'User has Logged out Successfully',
+    UserNotLoggedIn: 'You are not logged in! Please log in to get access.',
+    UserNotExist: 'The user belonging to this token does no longer exist.',
+    UserChangedPasswordRecently: 'User recently changed password! Please log in again.',
+    UserPermissionDenied: 'You do not have permission to perform this action',
+    UserNotFound: 'There is no user with email address.',
+    UserDetailsUpdated: 'User Details Updated Successfully',
+    UserAddressUpdated: 'User Address Updated Successfully',
+    UserDetailsFetched: 'User Details Fetched Successfully',
+    UserDetailsNotFetched: 'User Details Fetching Failed',
+    PasswordResetTokenSent: 'Password Reset Token sent to email!',
+    PasswordResetTokenNotSent: 'There was an error sending the email. Try again later!',
+    PasswordResetTokenInvalid: 'Password Reset Token is invalid or has expired',
+    WrongPassword: 'Wrong Password Entered',
+    PasswordUpdated: 'Password Updated Successfully',
+    EmailPasswordRequired: 'Please provide email and password',
+    EmailPasswordInvalid: 'Incorrect email or password',
+    ProductDetailsFetched: 'Product Details Fetched Successfully',
+    ProductDetailsUpdated: 'Product Details Updated Successfully',
+    ProductRemoved: 'Product has been Removed Successfully',
+    ProductAdded: 'Product has been Added Successfully'
+};

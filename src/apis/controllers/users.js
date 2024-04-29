@@ -1,14 +1,8 @@
 import User from '../../models/Users.js';
 import AppError from '../../utils/appError.js';
 import catchAsync from '../../utils/catchAsync.js';
-
-const filterObj = (obj, ...allowedFields) => {
-    const newObj = {};
-    Object.keys(obj).forEach((element) => {
-        if (allowedFields.includes(element)) newObj[element] = obj[element];
-    });
-    return newObj;
-};
+import { STATUS, STATUSMESSAGE, MESSAGE } from '../../utils/constants.js';
+import { filterObj } from '../../utils/helper.js';
 
 /**
  * @description It updates the details of logged in user.
@@ -17,7 +11,7 @@ const filterObj = (obj, ...allowedFields) => {
 export const updateDetails = catchAsync(async (req, res, next) => {
     // Send error if user attempts to change password data
     if (req.body.password) {
-        return next(new AppError('This route is not for password updates. Use update-password route'), 400);
+        return next(new AppError('This route is not for password updates. Use update-password route'), STATUS.BAD_REQUEST);
     }
 
     // Filtering out unwanted filed names that does'nt need to be updated
@@ -26,8 +20,9 @@ export const updateDetails = catchAsync(async (req, res, next) => {
     // Updating user document
     const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, { new: true, runValidators: true });
 
-    res.status(200).json({
-        status: 'success',
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.UserDetailsUpdated,
         data: {
             user: updatedUser
         }
@@ -42,16 +37,17 @@ export const getUsers = async (req, res) => {
     try {
         const users = await User.find();
 
-        res.status(200).json({
-            status: 'success',
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.UserDetailsFetched,
             results: users.length,
             data: {
                 users
             }
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.NOT_FOUND).json({
+            status: STATUSMESSAGE[STATUS.NOT_FOUND],
             message: error
         });
     }
@@ -65,16 +61,17 @@ export const getUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
 
-        res.status(200).json({
-            status: 'success',
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.UserDetailsFetched,
             results: user.length,
             data: {
                 user
             }
         });
     } catch (error) {
-        res.status(404).json({
-            status: 'failed',
+        res.status(STATUS.NOT_FOUND).json({
+            status: STATUSMESSAGE[STATUS.NOT_FOUND],
             message: error
         });
     }
@@ -91,8 +88,9 @@ export const updateAddress = catchAsync(async (req, res, next) => {
     // Updating user document
     const updatedUser = await User.findByIdAndUpdate(req.user.id, { address: filteredBody }, { new: true, runValidators: true });
 
-    res.status(200).json({
-        status: 'success',
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.UserAddressUpdated,
         data: {
             user: updatedUser
         }

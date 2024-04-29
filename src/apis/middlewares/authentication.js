@@ -5,6 +5,7 @@ import AppError from '../../utils/appError.js';
 import catchAsync from '../../utils/catchAsync.js';
 import crypto from 'crypto';
 import { sendEmail } from '../../utils/email.js';
+import { STATUS, STATUSMESSAGE, MESSAGE } from '../../utils/constants.js';
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -12,7 +13,7 @@ const signToken = (id) => {
     });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, message, res) => {
     const token = signToken(user._id);
 
     const cookieOptions = {
@@ -26,12 +27,12 @@ const createSendToken = (user, statusCode, res) => {
     //Removing password from output
     user.password = undefined;
 
-    console.log(`Hello👋 ${user.email}`);
+    // console.log(`Hello👋 ${user.email}`);
 
     res.status(statusCode).json({
-        status: 'success',
+        status: STATUSMESSAGE[statusCode],
         token,
-        message: `Hello👋 ${user.email}`,
+        message,
         data: {
             user
         }
@@ -51,22 +52,7 @@ export const signup = catchAsync(async (req, res, next) => {
         image: req?.file?.originalname
     });
 
-    createSendToken(newUser, 201, res);
-
-    // const token = signToken(newUser._id);
-    // res.status(201).json({
-    //     status: 'success',
-    //     token,
-    //     data: {
-    //         user: {
-    //             id: newUser._id,
-    //             name: newUser.name,
-    //             email: newUser.email,
-    //             role: newUser.role,
-    //             image: newUser.image
-    //         }
-    //     }
-    // });
+    createSendToken(newUser, STATUS.CREATED, `Hello👋 ${user.email}`, res);
 });
 
 /**
@@ -79,7 +65,7 @@ export const login = catchAsync(async (req, res, next) => {
     //checking if email and password exists
 
     if (!email || !password) {
-        return next(new AppError('Please provide email and password', 400));
+        return next(new AppError(MESSAGE.EmailPasswordRequired, STATUS.BAD_REQUEST));
     }
 
     //checking if user exists and password is correct
@@ -87,19 +73,12 @@ export const login = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError('Incorrect email or password', 401));
+        return next(new AppError(MESSAGE.EmailPasswordInvalid, STATUS.UNAUTHORIZED));
     }
 
     //sending token to client
 
-    createSendToken(user, 200, res);
-
-    // const token = signToken(user._id);
-
-    // res.status(201).json({
-    //     status: 'success',
-    //     token
-    // });
+    createSendToken(user, STATUS.OK, `Hello👋 ${user.email}`, res);
 });
 
 /**
@@ -114,8 +93,9 @@ export const logout = catchAsync(async (req, res) => {
 
     res.cookie('jwt', '', cookieOptions);
 
-    res.status(200).json({
-        status: 'success'
+    res.status(STATUS.OK).json({
+        status: STATUSMESSAGE[STATUS.OK],
+        message: MESSAGE.UserLoggedOut
     });
 });
 
@@ -130,7 +110,7 @@ export const protect = catchAsync(async (req, res, next) => {
         token = req.headers.authorization.split(' ')[1];
     }
     if (!token) {
-        return next(new AppError('You are not logged in! Please log in to get access.', 401));
+        return next(new AppError(MESSAGE.UserNotLoggedIn, STATUS.UNAUTHORIZED));
     }
 
     // Verifying token
@@ -141,13 +121,13 @@ export const protect = catchAsync(async (req, res, next) => {
 
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
-        return next(new AppError('The user belonging to this token does no longer exist.', 401));
+        return next(new AppError(MESSAGE.UserNotExist, STATUS.UNAUTHORIZED));
     }
 
     //  Check if user changed password after the token was issued
 
     if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return next(new AppError('User recently changed password! Please log in again.', 401));
+        return next(new AppError(MESSAGE.UserChangedPasswordRecently, STATUS.UNAUTHORIZED));
     }
 
     // GRANT ACCESS TO PROTECTED ROUTE
@@ -163,7 +143,7 @@ export const protect = catchAsync(async (req, res, next) => {
 export const restrictTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
-            return next(new AppError('You do not have permission to perform this action'), 403);
+            return next(new AppError(MESSAGE.UserPermissionDenied, STATUS.FORBIDDEN));
         }
 
         next();
@@ -178,7 +158,7 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
     // Getting user details based on the provided email
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-        return next(new AppError('There is no user with email address.', 404));
+        return next(new AppError(MESSAGE.UserNotFound, STATUS.NOT_FOUND));
     }
 
     // Generating random reset token
@@ -197,16 +177,16 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
             message
         });
 
-        res.status(200).json({
-            status: 'success',
-            message: 'Token sent to email!'
+        res.status(STATUS.OK).json({
+            status: STATUSMESSAGE[STATUS.OK],
+            message: MESSAGE.PasswordResetTokenSent
         });
     } catch (err) {
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save({ validateBeforeSave: false });
 
-        return next(new AppError('There was an error sending the email. Try again later!'), 500);
+        return next(new AppError(MESSAGE.PasswordResetTokenNotSent), STATUS.SERVER_ERROR);
     }
 });
 
@@ -222,7 +202,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
     // If token has'nt expired, and there is a user, set the new password
     if (!user) {
-        return next(new AppError('token is invalid or has expired'), 400);
+        return next(new AppError(MESSAGE.PasswordResetTokenInvalid, STATUS.BAD_REQUEST));
     }
     user.password = req.body.password;
     user.passwordResetToken = undefined;
@@ -232,7 +212,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     //update changedPasswordAt property for the user
 
     // login the user, also sending jwt
-    createSendToken(user, 200, res);
+    createSendToken(user, STATUS.OK, '', res);
 });
 
 /**
@@ -245,11 +225,11 @@ export const updatePassword = catchAsync(async (req, res, next) => {
 
     // Checking if the posted password is correct
     if (!user.correctPassword(req.body.passwordCurrent, user.password)) {
-        return next(new AppError('Your current password is wrong'), 401);
+        return next(new AppError(MESSAGE.WrongPassword, STATUS.UNAUTHORIZED));
     }
     // Updating Password
     user.password = req.body.passwordNew;
     await user.save();
     // Log user in , also sending JWT
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, MESSAGE.PasswordUpdated, res);
 });
