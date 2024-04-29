@@ -12,8 +12,9 @@ export const sendEmail = async (options) => {
     });
 
     // 2) Define the email options
+    const from = `${process.env.EMAIL_SENDER_NAME}  <${process.env.EMAIL_SENDER_USERNAME}>`;
     const mailOptions = {
-        from: 'Amulya Kaustubh <hello@jonas.io>',
+        from,
         to: options.email,
         subject: options.subject,
         text: options.message

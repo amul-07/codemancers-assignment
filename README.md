@@ -32,13 +32,29 @@ Start the server
 
 To run this project, you will need to add the following environment variables to your config.env file
 
-`DATABASE_LOCAL`
+`NODE_ENV`
+
+`DATABASE`
 
 `PORT`
 
 `JWT_SECRET`
 
 `JWT_EXPIRES_IN`
+
+`JWT_COOKIE_EXPIRES_IN`
+
+`EMAIL_USERNAME`
+
+`EMAIL_PASSWORD`
+
+`EMAIL_HOST`
+
+`EMAIL_PORT`
+
+`EMAIL_SENDER_USERNAME`
+
+`EMAIL_SENDER_NAME`
 
 ## Authors
 

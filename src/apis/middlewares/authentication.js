@@ -52,7 +52,7 @@ export const signup = catchAsync(async (req, res, next) => {
         image: req?.file?.originalname
     });
 
-    createSendToken(newUser, STATUS.CREATED, `Hello👋 ${user.email}`, res);
+    createSendToken(newUser, STATUS.CREATED, `Hello👋 ${req.body.email}`, res);
 });
 
 /**
@@ -78,7 +78,7 @@ export const login = catchAsync(async (req, res, next) => {
 
     //sending token to client
 
-    createSendToken(user, STATUS.OK, `Hello👋 ${user.email}`, res);
+    createSendToken(user, STATUS.OK, `Hello👋 ${email}`, res);
 });
 
 /**
