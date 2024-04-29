@@ -32,7 +32,7 @@ Start the server
 
 To run this project, you will need to add the following environment variables to your config.env file
 
-`NODE_ENV`
+`NODE_ENV`: Sets the Node's Running Environment. ("development" | "production")
 
 `DATABASE`
 
