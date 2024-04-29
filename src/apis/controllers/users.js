@@ -79,3 +79,22 @@ export const getUser = async (req, res) => {
         });
     }
 };
+
+/**
+ * @description It updates the address details of logged in user.
+ */
+
+export const updateAddress = catchAsync(async (req, res, next) => {
+    // Filtering out unwanted filed names that does'nt need to be updated
+    const filteredBody = filterObj({ ...req.body }, 'address', 'city', 'state', 'landmark', 'pinCode');
+
+    // Updating user document
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, { address: filteredBody }, { new: true, runValidators: true });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user: updatedUser
+        }
+    });
+});

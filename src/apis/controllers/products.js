@@ -52,10 +52,14 @@ export const getProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            { ...req.body, ...(req?.file?.originalname && { image: req.file.originalname }) },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
 
         res.status(200).json({
             status: 'success',
@@ -96,7 +100,13 @@ export const removeProduct = async (req, res) => {
 
 export const addProducts = async (req, res) => {
     try {
-        const newProduct = await Product.create(req.body);
+        const newProduct = await Product.create({
+            title: req?.body?.title,
+            description: req?.body?.description,
+            price: req?.body?.price,
+            inventoryCount: req?.body?.inventoryCount,
+            image: req?.file?.originalname
+        });
 
         res.status(201).json({
             status: 'success',

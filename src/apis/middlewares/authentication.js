@@ -26,9 +26,12 @@ const createSendToken = (user, statusCode, res) => {
     //Removing password from output
     user.password = undefined;
 
+    console.log(`Hello👋 ${user.email}`);
+
     res.status(statusCode).json({
         status: 'success',
         token,
+        message: `Hello👋 ${user.email}`,
         data: {
             user
         }
