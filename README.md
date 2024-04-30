@@ -34,27 +34,27 @@ To run this project, you will need to add the following environment variables to
 
 `NODE_ENV`: Sets the Node's Running Environment. ("development" | "production")
 
-`DATABASE`
+`DATABASE`: It denotes the mongodb uri used for the connection to the mongodb server.
 
-`PORT`
+`PORT`: It denotes the port at which the nodejs server will run.
 
-`JWT_SECRET`
+`JWT_SECRET`: It denotes the secret string which is used for signing and verifying the jwt token.
 
-`JWT_EXPIRES_IN`
+`JWT_EXPIRES_IN`: It denotes the jwt token's expiry time in string form. (e.g- '48h' or '30d')
 
-`JWT_COOKIE_EXPIRES_IN`
+`JWT_COOKIE_EXPIRES_IN`: It denotes the jwt token's expiry time in number form. (e.g- 48)
 
-`EMAIL_USERNAME`
+`EMAIL_USERNAME`: It denotes the SMTP username.
 
-`EMAIL_PASSWORD`
+`EMAIL_PASSWORD`: It denotes the SMTP password.
 
-`EMAIL_HOST`
+`EMAIL_HOST`: It denotes the SMTP host.
 
-`EMAIL_PORT`
+`EMAIL_PORT`: It denotes the SMTP port.
 
-`EMAIL_SENDER_USERNAME`
+`EMAIL_SENDER_USERNAME`: It denotes the sender's email address.
 
-`EMAIL_SENDER_NAME`
+`EMAIL_SENDER_NAME`: It denotes the sender's name.
 
 ## Authors
 
